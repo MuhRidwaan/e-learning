@@ -13,14 +13,13 @@ Aplikasi e-learning berbasis Laravel 12.
 
 **1. Clone & masuk ke folder project**
 ```bash
-git clone https://github.com/username/elearning.git
-cd elearning
+git clone https://github.com/MuhRidwaan/e-learning.git
+cd e-learning
 ```
 
 **2. Install dependency**
 ```bash
 composer update
-npm install
 ```
 
 **3. Salin file environment**

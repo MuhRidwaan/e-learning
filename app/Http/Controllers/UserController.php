@@ -1,0 +1,97 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+
+class UserController extends Controller
+{
+    public function index()
+    {
+        $users = User::with('roles')->latest()->paginate(10);
+        return view('users.index', compact('users'));
+    }
+
+    public function create()
+    {
+        $roles = Role::all();
+        return view('users.form', compact('roles'));
+    }
+
+    public function store(Request $request)
+    {
+        $validator = validator($request->all(), [
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'required|min:6|confirmed',
+            'phone'     => 'nullable|string|max:20',
+            'role_id'   => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'password'  => Hash::make($request->password),
+            'phone'     => $request->phone,
+            'is_active' => $request->boolean('is_active', true),
+        ]);
+
+        $user->roles()->attach($request->role_id, ['model_type' => User::class]);
+
+        return response()->json([
+            'message' => 'User berhasil ditambahkan.',
+            'redirect' => route('users.index'),
+        ]);
+    }
+
+    public function edit(User $user)
+    {
+        $roles = Role::all();
+        $user->load('roles');
+        return view('users.form', compact('user', 'roles'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validator = validator($request->all(), [
+            'name'     => 'required|string|max:255',
+            'email'    => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => 'nullable|min:6|confirmed',
+            'phone'    => 'nullable|string|max:20',
+            'role_id'  => 'required|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user->update([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'phone'     => $request->phone,
+            'is_active' => $request->boolean('is_active'),
+            'password'  => $request->password ? Hash::make($request->password) : $user->password,
+        ]);
+
+        $user->roles()->sync([$request->role_id => ['model_type' => User::class]]);
+
+        return response()->json([
+            'message' => 'User berhasil diupdate.',
+            'redirect' => route('users.index'),
+        ]);
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return response()->json(['message' => 'User berhasil dihapus.']);
+    }
+}
