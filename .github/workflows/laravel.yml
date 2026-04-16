@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: ["main"]
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
@@ -60,7 +63,6 @@ jobs:
         run: |
           for i in {1..10}; do
             mysqladmin ping -h 127.0.0.1 -proot && break
-            echo "Waiting for MySQL..."
             sleep 3
           done
 
