@@ -62,7 +62,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="{{ url('/courses') }}" class="nav-link {{ request()->is('courses') ? 'active' : '' }}">
+                            <a href="{{ url('/courses') }}" class="nav-link {{ request()->is('courses*') ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Semua Kelas</p>
                             </a>
@@ -227,7 +227,6 @@
                         <p>Roles & Permission</p>
                     </a>
                 </li>
-
                 <!-- Activity Log -->
                 <li class="nav-item">
                     <a href="{{ url('/activity-logs') }}" class="nav-link {{ request()->is('activity-logs*') ? 'active' : '' }}">
