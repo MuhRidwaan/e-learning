@@ -227,7 +227,13 @@
                         <p>Roles & Permission</p>
                     </a>
                 </li>
-
+                 <!-- Courses -->
+                <li class="nav-item">
+                    <a href="{{ url('/courses') }}" class="nav-link {{ request()->is('courses*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-user-shield"></i>
+                        <p>Courses</p>
+                    </a>
+                </li>
                 <!-- Activity Log -->
                 <li class="nav-item">
                     <a href="{{ url('/activity-logs') }}" class="nav-link {{ request()->is('activity-logs*') ? 'active' : '' }}">
