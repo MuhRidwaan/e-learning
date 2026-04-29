@@ -8,11 +8,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+
 class RegisterController extends Controller
 {
     public function showRegistrationForm()
     {
-        return view('auth.register'); // Pastikan nama file view sesuai
+        return view('auth.register'); 
     }
 
     public function register(Request $request)
