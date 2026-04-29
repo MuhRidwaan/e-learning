@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -14,7 +15,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected routes
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-
+ 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+    Route::resource('courses', CourseController::class);
 });
