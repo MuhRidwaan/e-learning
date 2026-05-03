@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DetailKelasController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -17,4 +18,6 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
+    Route::get('/detail-kelas', [DetailKelasController::class, 'index'])->name('detail-kelas.index');
+    Route::get('/detail-tugas', [DetailKelasController::class, 'tugas'])->name('detail-tugas.index');
 });
