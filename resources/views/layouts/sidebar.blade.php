@@ -86,13 +86,15 @@
                 {{-- PEMBELAJARAN --}}
                 <li class="nav-header">PEMBELAJARAN</li>
 
+                @if(auth()->check() && auth()->user()->hasPermission('materials.view'))
                 <li class="nav-item">
-                    <a href="{{ url('/materials') }}"
-                       class="nav-link {{ request()->is('materials*') ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-layer-group"></i>
+                    <a href="{{ route('courses.index') }}"
+                       class="nav-link {{ request()->is('courses/*/materials*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-book-open"></i>
                         <p>Materi</p>
                     </a>
                 </li>
+                @endif
 
                 <li class="nav-item">
                     <a href="{{ url('/assignments') }}"

@@ -9,6 +9,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\CourseModuleController;
+use App\Http\Controllers\MaterialController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -48,5 +50,28 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{threadId}/posts/{postId}',               [ForumController::class, 'destroyPost'])->name('destroyPost');
         Route::post('/{threadId}/posts/{postId}/solution',        [ForumController::class, 'markSolution'])->name('markSolution');
         Route::post('/{threadId}/posts/{postId}/unmark-solution', [ForumController::class, 'unmarkSolution'])->name('unmarkSolution');
+    });
+
+    // Materi & Modul routes per kelas
+    Route::prefix('courses/{courseId}')->name('courses.')->group(function () {
+        // Halaman utama materi (index modul)
+        Route::get('/materials', [CourseModuleController::class, 'index'])->name('materials.index');
+
+        // CRUD CourseModule
+        Route::post('/modules',            [CourseModuleController::class, 'store'])->name('modules.store');
+        Route::put('/modules/{module}',    [CourseModuleController::class, 'update'])->name('modules.update');
+        Route::delete('/modules/{module}', [CourseModuleController::class, 'destroy'])->name('modules.destroy');
+
+        // CRUD Material — create/store must come before {material} to avoid route conflict
+        Route::get('/materials/create',          [MaterialController::class, 'create'])->name('materials.create');
+        Route::post('/materials',                [MaterialController::class, 'store'])->name('materials.store');
+        Route::get('/materials/{material}',      [MaterialController::class, 'show'])->name('materials.show');
+        Route::get('/materials/{material}/edit', [MaterialController::class, 'edit'])->name('materials.edit');
+        Route::put('/materials/{material}',      [MaterialController::class, 'update'])->name('materials.update');
+        Route::delete('/materials/{material}',   [MaterialController::class, 'destroy'])->name('materials.destroy');
+
+        // Progress & Bookmark (AJAX only)
+        Route::post('/materials/{material}/progress', [MaterialController::class, 'progress'])->name('materials.progress');
+        Route::post('/materials/{material}/bookmark', [MaterialController::class, 'bookmark'])->name('materials.bookmark');
     });
 });
