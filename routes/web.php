@@ -21,7 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('roles', RoleController::class);
     Route::resource('courses', CourseController::class);
 
-    // Forum routes
+    // Forum global (langsung dari sidebar)
+    Route::get('/forum', [ForumController::class, 'globalIndex'])->name('forum.global');
+
+    // Forum routes per kelas
     Route::prefix('courses/{courseId}/forum')->name('forum.')->group(function () {
         Route::get('/',          [ForumController::class, 'index'])->name('index');
         Route::get('/create',    [ForumController::class, 'create'])->name('create');
