@@ -8,6 +8,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SyllabusController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('courses', CourseController::class);
+    Route::resource('syllabus', SyllabusController::class);
+    Route::resource('assignments', AssignmentController::class);
     // Forum routes (nested under courses)
     Route::prefix('courses/{course}')->name('forum.')->group(function () {
         Route::get('forum', [ForumController::class, 'index'])->name('index');
@@ -42,5 +45,5 @@ Route::middleware('auth')->group(function () {
         Route::post('forum/{thread}/posts/{post}/solution', [ForumController::class, 'markSolution'])->name('markSolution');
         Route::delete('forum/{thread}/posts/{post}/solution', [ForumController::class, 'unmarkSolution'])->name('unmarkSolution');
     });
-    Route::resource('syllabus', SyllabusController::class);
+    
 });

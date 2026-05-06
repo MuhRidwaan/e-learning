@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Assignment;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
-class SyllabusController extends Controller
+class AssignmentController extends Controller
 {
     public function index()
     {
-        return view('syllabus.index');
+        return view('assignments.index');
     }
 
 }

@@ -111,7 +111,7 @@
 
                 <!-- Tugas -->
                 <li class="nav-item {{ request()->is('assignments*') ? 'menu-open' : '' }}">
-                    <a href="#" class="nav-link {{ request()->is('assignments*') ? 'active' : '' }}">
+                    <a href="{{ url('/assignments') }}" class="nav-link {{ request()->is('assignments*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tasks"></i>
                         <p>
                             Tugas
