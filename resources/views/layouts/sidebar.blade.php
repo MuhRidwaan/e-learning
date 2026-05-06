@@ -43,11 +43,11 @@
 
                 <li class="nav-header">AKADEMIK</li>
 
-                <!-- Silabus -->
+                <!-- Syllabus -->
                 <li class="nav-item">
-                    <a href="{{ url('/silabus') }}" class="nav-link {{ request()->is('silabus*') ? 'active' : '' }}">
+                    <a href="{{ url('/syllabus') }}" class="nav-link {{ request()->is('syllabus*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-open"></i>
-                        <p>Silabus</p>
+                        <p>Syllabus</p>
                     </a>
                 </li>
 

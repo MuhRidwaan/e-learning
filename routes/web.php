@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\SyllabusController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -24,4 +25,5 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('courses', CourseController::class);
-});
+    Route::resource('syllabus', SyllabusController::class);
+    });
