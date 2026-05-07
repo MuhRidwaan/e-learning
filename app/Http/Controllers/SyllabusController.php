@@ -16,7 +16,9 @@ class SyllabusController extends Controller
 
     public function create()
     {
-        return view('syllabus.create');
+        $images = array_diff(scandir(public_path('img')), array('.', '..'));
+        return view('syllabus.create', compact('images'));
+        // return view('syllabus.create');
     } 
 
     public function store(Request $request)
@@ -43,8 +45,10 @@ class SyllabusController extends Controller
 
     public function edit(Syllabus $syllabu) 
     {
-        $syllabus = $syllabu; 
-        return view('syllabus.edit', compact('syllabus'));
+        $syllabus = $syllabu;
+        $images = array_diff(scandir(public_path('img')), array('.', '..'));
+        return view('syllabus.edit', compact('syllabus', 'images'));
+        // return view('syllabus.edit', compact('syllabus'));
     }
 
     public function update(Request $request, Syllabus $syllabu)
@@ -59,7 +63,7 @@ class SyllabusController extends Controller
 
         $syllabu->update($validatedData);
 
-        return redirect()->route('syllabus.index')->with('success', 'Silabus berhasil diperbarui!');
+        return redirect()->route('syllabus.show', $syllabu->id)->with('success', 'Silabus berhasil diperbarui!');
     }
 
     public function destroy(Syllabus $syllabu)
