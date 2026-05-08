@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/profile', [UserController::class, 'profile']);
+Route::post('/profile/update', [UserController::class, 'updateProfile']);
+
 
 // Protected routes
 Route::middleware('auth')->group(function () {

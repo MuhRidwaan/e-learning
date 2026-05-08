@@ -94,4 +94,14 @@ class UserController extends Controller
         $user->delete();
         return response()->json(['message' => 'User berhasil dihapus.']);
     }
+
+    public function profile()
+{
+    return view('profile');
+}
+
+public function updateProfile(Request $request)
+{
+    dd($request->all());
+}
 }
