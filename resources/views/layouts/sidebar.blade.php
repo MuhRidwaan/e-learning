@@ -53,15 +53,9 @@
                 @if(auth()->check() && (auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('akademik')))
                 <li class="nav-header">MASTER DATA</li>
 
-<<<<<<< HEAD
-                <!-- Syllabus -->
-                <li class="nav-item">
-                    <a href="{{ url('/syllabus') }}" class="nav-link {{ request()->is('syllabus*') ? 'active' : '' }}">
-=======
                 <li class="nav-item">
                     <a href="{{ url('/syllabus') }}"
                        class="nav-link {{ request()->is('syllabus*') ? 'active' : '' }}">
->>>>>>> 5d8d10b622e562f93524fce1b6e38614ab17d922
                         <i class="nav-icon fas fa-book-open"></i>
                         <p>Syllabus</p>
                     </a>
