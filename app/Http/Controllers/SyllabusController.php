@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Syllabus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class SyllabusController extends Controller
 {
@@ -71,4 +72,5 @@ class SyllabusController extends Controller
         $syllabu->delete();
         return redirect()->route('syllabus.index')->with('success', 'Silabus berhasil dihapus!');
     }
+
 }

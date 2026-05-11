@@ -1,5 +1,5 @@
 @extends('main')
-@section('title', 'Catalog Course')
+@section('title', 'Daftar Tugas')
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
