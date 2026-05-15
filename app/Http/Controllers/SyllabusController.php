@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Syllabus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class SyllabusController extends Controller
 {
@@ -14,7 +15,10 @@ class SyllabusController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $data_syllabi = Syllabus::withCount('courses')->latest()->get();
+        $data_syllabi = Syllabus::withCount('courses')
+            ->with('instructor')
+            ->latest()
+            ->get();
         return view('syllabus.index', compact('data_syllabi'));
     }
 
@@ -25,7 +29,9 @@ class SyllabusController extends Controller
         }
 
         $images = array_values(array_diff(scandir(public_path('img')), ['.', '..']));
-        return view('syllabus.form', compact('images'));
+        $instructors = User::all(); 
+
+        return view('syllabus.form', compact('images', 'instructors'));
     }
 
     public function store(Request $request)
@@ -39,6 +45,7 @@ class SyllabusController extends Controller
             'theme'          => 'nullable|string|max:255',
             'description'    => 'required|string',
             'duration_weeks' => 'required|integer|min:1',
+            'instructor_id'  => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -62,6 +69,7 @@ class SyllabusController extends Controller
         }
 
         $syllabu->loadCount('courses');
+        $syllabu->load('instructor');
         return view('syllabus.show', ['syllabus' => $syllabu]);
     }
 
@@ -72,7 +80,13 @@ class SyllabusController extends Controller
         }
 
         $images = array_values(array_diff(scandir(public_path('img')), ['.', '..']));
-        return view('syllabus.form', ['syllabus' => $syllabu, 'images' => $images]);
+        $instructors = User::all(); 
+
+        return view('syllabus.form', [
+            'syllabus'    => $syllabu,
+            'images'      => $images,
+            'instructors' => $instructors, 
+        ]);
     }
 
     public function update(Request $request, Syllabus $syllabu)
@@ -86,6 +100,7 @@ class SyllabusController extends Controller
             'theme'          => 'nullable|string|max:255',
             'description'    => 'required|string',
             'duration_weeks' => 'required|integer|min:1',
+            'instructor_id'  => 'required|exists:users,id', 
         ]);
 
         if ($validator->fails()) {

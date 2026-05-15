@@ -20,7 +20,13 @@ class Syllabus extends Model
         'description',
         'duration_weeks',
         'created_by',
+        'instructor_id', 
     ];
+
+    public function instructor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'instructor_id');
+    }
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
