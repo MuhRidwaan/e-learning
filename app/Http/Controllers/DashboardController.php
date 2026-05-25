@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Course;
-use App\Models\Assignment;
+// use App\Models\Assignment; // Dimatikan sementara karena modelnya tidak ada
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,7 +20,7 @@ class DashboardController extends Controller
                 'total_users'       => User::count(),
                 'total_courses'     => Course::count(),
                 'total_syllabus'    => 0,
-                'total_assignments' => Assignment::count(),
+                'total_assignments' => 0, // DIUBAH: Sementara diisi 0 agar tidak error
             ];
             return view('dashboard', compact('stats'));
         }
@@ -42,9 +42,10 @@ class DashboardController extends Controller
 
         // 4. TAMPILAN ROLE: PELAJAR / SISWA (Default)
         $activeCourses = Course::limit(2)->get(); 
-        $upcomingAssignments = Assignment::orderBy('due_date', 'asc')->limit(3)->get();
+        
+        // DIUBAH: Dibikin array kosong [] dulu biar tampilan "Hore! Tidak ada tugas terdekat" aktif dan gak error
+        $upcomingAssignments = []; 
 
-        // KUNCI PERBAIKAN: Mengubah $upcomingAssignments menjadi 'upcomingAssignments'
         return view('dashboard', compact('activeCourses', 'upcomingAssignments'));
     }
 }
