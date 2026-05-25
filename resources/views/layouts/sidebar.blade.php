@@ -1,5 +1,4 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
         <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="E-Learning Logo"
              class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -7,14 +6,13 @@
     </a>
 
     <div class="sidebar">
-        <!-- User Panel -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
                 <img src="{{ asset('dist/img/user2-160x160.jpg') }}"
                      class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a href="#" class="d-block">{{ auth()->user()->name ?? 'Guest' }}</a>
+                <a href="{{ url('/profile') }}" class="d-block">{{ auth()->user()->name ?? 'Guest' }}</a>
                 @auth
                 <small style="color:#adb5bd">
                     {{ auth()->user()->roles->first()->name ?? '' }}
@@ -23,7 +21,6 @@
             </div>
         </div>
 
-        <!-- Sidebar Search -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
                 <input class="form-control form-control-sidebar" type="search"
@@ -54,8 +51,8 @@
                 <li class="nav-header">MASTER DATA</li>
 
                 <li class="nav-item">
-                    <a href="{{ url('/syllabus') }}"
-                       class="nav-link {{ request()->is('syllabus*') ? 'active' : '' }}">
+                    <a href="{{ route('syllabus.index') }}"
+                       class="nav-link {{ request()->routeIs('syllabus.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-book-open"></i>
                         <p>Syllabus</p>
                     </a>
@@ -122,8 +119,8 @@
 
                 @if(auth()->user()->hasPermission('assignments.view'))
                 <li class="nav-item">
-                    <a href="{{ url('/assignments') }}"
-                       class="nav-link {{ request()->is('assignments*') ? 'active' : '' }}">
+                    <a href="{{ route('assignments.index') }}"
+                       class="nav-link {{ request()->routeIs('assignments.*') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-tasks"></i>
                         <p>Tugas</p>
                     </a>
@@ -142,8 +139,8 @@
 
                 @if(auth()->user()->hasPermission('schedules.view'))
                 <li class="nav-item">
-                    <a href="{{ url('/schedules') }}"
-                       class="nav-link {{ request()->is('schedules*') ? 'active' : '' }}">
+                    <a href="{{ route('schedules.index') }}"
+                       class="nav-link {{ request()->routeIs('schedules.index') ? 'active' : '' }}">
                         <i class="nav-icon fas fa-calendar-alt"></i>
                         <p>Jadwal & Absensi</p>
                     </a>
@@ -173,23 +170,23 @@
                 </li>
 
                 {{-- PERSONAL --}}
-<li class="nav-header">PERSONAL</li>
+                <li class="nav-header">PERSONAL</li>
 
-<li class="nav-item">
-    <a href="{{ url('/profile') }}"
-       class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-user-circle"></i>
-        <p>profile</p>
-    </a>
-</li>
+                <li class="nav-item">
+                    <a href="{{ url('/profile') }}"
+                       class="nav-link {{ request()->is('profile*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-user-circle"></i>
+                        <p>Profile</p>
+                    </a>
+                </li>
 
-<li class="nav-item">
-    <a href="{{ url('/certificates') }}"
-       class="nav-link {{ request()->is('certificates*') ? 'active' : '' }}">
-        <i class="nav-icon fas fa-certificate"></i>
-        <p>Sertifikat Saya</p>
-    </a>
-</li>
+                <li class="nav-item">
+                    <a href="{{ url('/certificates') }}"
+                       class="nav-link {{ request()->is('certificates*') ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-certificate"></i>
+                        <p>Sertifikat Saya</p>
+                    </a>
+                </li>
 
                 {{-- ADMINISTRASI — super_admin --}}
                 @if(auth()->check() && auth()->user()->hasRole('super_admin'))
