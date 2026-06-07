@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\SyllabusController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\CourseModuleController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\MaterialController;
@@ -39,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('syllabus', SyllabusController::class);
     Route::resource('assignments', AssignmentController::class);
     Route::post('assignments/{assignment}/submit', [AssignmentController::class, 'submit'])->name('assignments.submit');
+    Route::resource('announcements', AnnouncementController::class);
     Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
     Route::get('assignments/{assignment}/submissions', [AssignmentController::class, 'submissions'])->name('assignments.submissions');
     Route::get('assignments/{assignment}/submissions/{submission}', [AssignmentController::class, 'gradeForm'])->name('assignments.grade.form');
