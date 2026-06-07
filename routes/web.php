@@ -14,15 +14,17 @@ use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\MateriHubController;
 use App\Http\Controllers\ScheduleController;
-use App\Http\Controllers\AssignmentSubmissionController;
+use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QuizAttemptController;
+use App\Http\Controllers\QuizQuestionController;
+use App\Http\Controllers\QuizOptionController;
 use Illuminate\Support\Facades\Route;
 
 // Auth
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/profile', [UserController::class, 'profile']);
-Route::post('/profile/update', [UserController::class, 'updateProfile']);
+
 
 
 // Registration
@@ -32,23 +34,99 @@ Route::post('/register', [RegisterController::class, 'register']);
 // Protected routes
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    // Profile
+    Route::get('/profile', [UserController::class, 'profile'])
+        ->name('profile');
+
+    Route::post('/profile/update', [UserController::class, 'updateProfile'])
+        ->name('profile.update');
+
 
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);
     Route::resource('courses', CourseController::class);
     Route::resource('syllabus', SyllabusController::class);
     Route::resource('assignments', AssignmentController::class);
-    Route::post('assignments/{assignment}/submit', [AssignmentController::class, 'submit'])->name('assignments.submit');
     Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
-    Route::get('assignments/{assignment}/submissions', [AssignmentController::class, 'submissions'])->name('assignments.submissions');
-    Route::get('assignments/{assignment}/submissions/{submission}', [AssignmentController::class, 'gradeForm'])->name('assignments.grade.form');
-    Route::post('assignments/{assignment}/submissions/{submission}', [AssignmentController::class, 'grade'])->name('assignments.grade');
-    Route::post('/notifications/{id}/read', function ($id) {
-        Auth::user()->notifications()->where('id', $id)->update(['read_at' => now()]);
-        return response()->json(['success' => true]);
-    })->middleware('auth')->name('notifications.read');
 
-    
+    // enrollment - quizcontroller
+    Route::resource('quizzes', QuizController::class);
+
+    Route::prefix('quizzes/{quiz}')
+    ->name('quizzes.')
+    ->group(function () {
+
+        Route::get('/questions',
+            [QuizQuestionController::class,'index'])
+            ->name('questions.index');
+
+        Route::get('/questions/create',
+            [QuizQuestionController::class,'create'])
+            ->name('questions.create');
+
+        Route::post('/questions',
+            [QuizQuestionController::class,'store'])
+            ->name('questions.store');
+
+        Route::get('/questions/{question}/edit',
+            [QuizQuestionController::class,'edit'])
+            ->name('questions.edit');
+
+        Route::put('/questions/{question}',
+            [QuizQuestionController::class,'update'])
+            ->name('questions.update');
+
+        Route::delete('/questions/{question}',
+            [QuizQuestionController::class,'destroy'])
+            ->name('questions.destroy');
+
+        Route::get('/attempts',
+            [QuizAttemptController::class, 'index'])
+            ->name('attempts.index');
+
+        Route::get('/take',
+            [QuizAttemptController::class, 'take'])
+            ->name('attempts.take');
+
+        Route::post('/attempts',
+            [QuizAttemptController::class, 'store'])
+            ->name('attempts.store');
+
+        Route::get('/attempts/{attempt}',
+            [QuizAttemptController::class, 'show'])
+            ->name('attempts.show');
+
+        Route::get('/attempts/{attempt}/grade',
+            [QuizAttemptController::class, 'gradeForm'])
+            ->name('attempts.grade.form');
+
+        Route::post('/attempts/{attempt}/grade',
+            [QuizAttemptController::class, 'grade'])
+            ->name('attempts.grade');
+    });
+
+    // enrollment - quiz options 
+    Route::prefix('questions/{question}')
+    ->name('questions.')
+    ->group(function () {
+
+        Route::get('/options',
+            [QuizOptionController::class,'index'])
+            ->name('options.index');
+
+        Route::post('/options',
+            [QuizOptionController::class,'store'])
+            ->name('options.store');
+
+        Route::put('/options/{option}',
+            [QuizOptionController::class,'update'])
+            ->name('options.update');
+
+        Route::delete('/options/{option}',
+            [QuizOptionController::class,'destroy'])
+            ->name('options.destroy');
+    });
+
     // Enrollment — manajemen pelajar & pengajar per kelas
     Route::prefix('courses/{course}/enrollments')->name('enrollments.')->group(function () {
         Route::get('/',                        [EnrollmentController::class, 'index'])->name('index');
@@ -62,6 +140,9 @@ Route::middleware('auth')->group(function () {
 
     // Hub materi — entry point dari sidebar
     Route::get('/materi', [MateriHubController::class, 'index'])->name('materi.hub');
+
+    // Bookmark list for current student
+    Route::get('/bookmarks', [MaterialController::class, 'bookmarks'])->name('bookmarks.index');
 
     // Forum global (langsung dari sidebar)
     Route::get('/forum', [ForumController::class, 'globalIndex'])->name('forum.global');
@@ -104,5 +185,8 @@ Route::middleware('auth')->group(function () {
         // Progress & Bookmark (AJAX only)
         Route::post('/materials/{material}/progress', [MaterialController::class, 'progress'])->name('materials.progress');
         Route::post('/materials/{material}/bookmark', [MaterialController::class, 'bookmark'])->name('materials.bookmark');
+        
+        
+
     });
 });

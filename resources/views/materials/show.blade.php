@@ -21,6 +21,48 @@
             </div>
         </div>
     </div>
+    <div class="d-flex justify-content-between">
+
+    <a href="{{ route('courses.materials.index', $course->id) }}"
+       class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i>
+        Daftar Materi
+    </a>
+
+    <div>
+
+        <button type="button"
+                class="btn btnBookmark {{ $isBookmarked ? 'btn-warning' : 'btn-outline-warning' }}"
+                data-url="{{ route('courses.materials.bookmark', [$course->id, $material->id]) }}">
+
+            <i class="fas fa-bookmark"></i>
+
+            <span class="bookmarkText">
+                {{ $isBookmarked ? 'Bookmarked' : 'Bookmark' }}
+            </span>
+
+        </button>
+
+        <button type="button"
+                id="btnComplete"
+                data-url="{{ route('courses.materials.progress', [$course->id, $material->id]) }}"
+                class="btn {{ ($progress?->is_completed ?? false) ? 'btn-success' : 'btn-outline-success' }}">
+
+            <i class="fas fa-check-circle"></i>
+
+            <span id="completeText">
+                {{ ($progress?->is_completed ?? false) ? 'Selesai' : 'Tandai Selesai' }}
+            </span>
+
+        </button>
+
+        <a href="{{ route('bookmarks.index') }}" class="btn btn-outline-primary ml-2">
+            <i class="fas fa-bookmark"></i> Daftar Bookmark
+        </a>
+
+    </div>
+
+</div>
 </div>
 
 <section class="content">
@@ -56,6 +98,52 @@
                                     </span>
                                 </div>
                             </div>
+                            @if(!$isPengajar)
+
+    <div class="mt-2 d-flex align-items-center flex-wrap" style="gap:8px">
+
+        {{-- Bookmark --}}
+        <button type="button"
+                class="btn btn-sm btnBookmark {{ $isBookmarked ? 'btn-warning' : 'btn-outline-warning' }}"
+                data-url="{{ route('courses.materials.bookmark', [$course->id, $material->id]) }}"
+                data-material-id="{{ $material->id }}"
+                data-bookmarked="{{ $isBookmarked ? '1' : '0' }}">
+
+            <i class="fas fa-bookmark"></i>
+
+            <span class="bookmarkText">
+                {{ $isBookmarked ? 'Bookmarked' : 'Bookmark' }}
+            </span>
+
+        </button>
+
+        {{-- Progress --}}
+        <button type="button"
+                id="btnComplete"
+                class="btn btn-sm {{ ($progress?->is_completed ?? false) ? 'btn-success' : 'btn-outline-success' }}"
+                data-url="{{ route('courses.materials.progress', [$course->id, $material->id]) }}">
+
+            <i class="fas fa-check-circle"></i>
+
+            <span id="completeText">
+                {{ ($progress?->is_completed ?? false) ? 'Selesai' : 'Tandai Selesai' }}
+            </span>
+
+        </button>
+
+    </div>
+
+    <div class="progress mt-2" style="height:20px;">
+        <div id="progressBar"
+             class="progress-bar bg-success"
+             role="progressbar"
+             style="width: {{ ($progress?->is_completed ?? false) ? 100 : 0 }}%">
+            {{ ($progress?->is_completed ?? false) ? '100%' : '0%' }}
+        </div>
+    </div>
+
+@endif
+
                             {{-- Pengajar actions --}}
                             @if($isPengajar)
                             <div class="d-flex" style="gap:6px">
@@ -293,8 +381,8 @@
                 @if($isEnrolled && !$isPengajar)
                 <div class="card card-outline card-warning mb-3">
                     <div class="card-body py-2 text-center">
-                        <button type="button" id="btnBookmark"
-                                class="btn btn-sm btn-block {{ $isBookmarked ? 'btn-warning' : 'btn-outline-warning' }}"
+                        <button type="button" class="btn btn-sm btn-block btnBookmark"
+                                data-url="{{ route('courses.materials.bookmark', [$course->id, $material->id]) }}"
                                 data-material-id="{{ $material->id }}"
                                 data-bookmarked="{{ $isBookmarked ? '1' : '0' }}">
                             @if($isBookmarked)
@@ -563,9 +651,11 @@ $(document).ready(function () {
                 }
 
                 // Update bookmark
-                const $btnBM = $('#btnBookmark');
+                const $btnBM = $('.btnBookmark');
                 if ($btnBM.length) {
-                    $btnBM.attr('data-material-id', mat.id).attr('data-bookmarked', res.is_bookmarked ? '1' : '0');
+                    $btnBM.attr('data-url', res.bookmark_url)
+                          .attr('data-material-id', mat.id)
+                          .attr('data-bookmarked', res.is_bookmarked ? '1' : '0');
                     if (res.is_bookmarked) {
                         $btnBM.removeClass('btn-outline-warning').addClass('btn-warning')
                               .html('<i class="fas fa-bookmark mr-1"></i>Hapus Bookmark');
@@ -624,7 +714,7 @@ $(document).ready(function () {
     }
 
     // ── Intercept navigasi materi (sidebar + prev/next) ───────────────────
-    $(document).on('click', '[data-url]', function (e) {
+    $(document).on('click', 'a[data-url]', function (e) {
         e.preventDefault();
         // Pakai .attr() bukan .data() agar selalu baca dari DOM (bukan jQuery cache)
         loadMaterial($(this).attr('data-url'));
@@ -697,33 +787,87 @@ $(document).ready(function () {
         });
     });
 
-    // ── Bookmark ──────────────────────────────────────────────────────────
-    $(document).on('click', '#btnBookmark', function () {
-        const btn        = $(this);
-        const materialId = btn.data('material-id');
-        btn.prop('disabled', true);
-        $.ajax({
-            url: '/courses/' + courseId + '/materials/' + materialId + '/bookmark',
-            type: 'POST',
-            data: { _token: CSRF },
-            success: function (res) {
-                btn.prop('disabled', false);
-                if (res.is_bookmarked) {
-                    btn.data('bookmarked','1').removeClass('btn-outline-warning').addClass('btn-warning')
-                       .html('<i class="fas fa-bookmark mr-1"></i>Hapus Bookmark');
-                } else {
-                    btn.data('bookmarked','0').removeClass('btn-warning').addClass('btn-outline-warning')
-                       .html('<i class="far fa-bookmark mr-1"></i>Tambah Bookmark');
-                }
-                Swal.fire({ icon:'success', title:'Berhasil!', text: res.message,
-                    toast:true, position:'top-end', timer:2000, showConfirmButton:false });
-            },
-            error: function () {
-                btn.prop('disabled', false);
-                Swal.fire('Error', 'Gagal memperbarui bookmark.', 'error');
+// =====================================================
+// BOOKMARK
+// =====================================================
+
+$(document).on('click', '.btnBookmark', function () {
+
+    let btn = $(this);
+    let url = btn.attr('data-url');
+    if (!url && btn.data('material-id')) {
+        url = '/courses/' + courseId + '/materials/' + btn.data('material-id') + '/bookmark';
+    }
+    if (!url) {
+        console.warn('Bookmark URL not found for button', btn);
+        return;
+    }
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        method: 'POST', 
+        headers: {
+            'X-CSRF-TOKEN': CSRF
+        },
+        success: function (res) {
+
+            console.log(res);
+
+            if (res.is_bookmarked) {
+
+                btn.removeClass('btn-outline-warning')
+                   .addClass('btn-warning');
+
+                $('.bookmarkText').text('Bookmarked');
+
+            } else {
+
+                btn.removeClass('btn-warning')
+                   .addClass('btn-outline-warning');
+
+                $('.bookmarkText').text('Bookmark');
+
             }
-        });
+        },
+        error: function(xhr){
+            console.log(xhr.responseText);
+        }
     });
+
+});
+
+
+// =====================================================
+// MARK COMPLETE
+// =====================================================
+
+$(document).on('click', '#btnComplete', function () {
+
+    let btn = $(this);
+
+    $.ajax({
+        url: btn.data('url'),
+        type: 'POST',
+        data: {
+            _token: CSRF,
+            is_completed: true
+        },
+        success: function (res) {
+
+            btn.removeClass('btn-outline-success')
+               .addClass('btn-success');
+
+            $('#completeText').text('Selesai');
+
+            $('#progressBar')
+                .css('width', '100%')
+                .text('100%');
+
+        }
+    });
+
+});
 
     // ── Delete material ───────────────────────────────────────────────────
     ajaxDelete('.btn-delete-material', 'Hapus materi ini?');
