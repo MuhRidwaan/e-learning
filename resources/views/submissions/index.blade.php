@@ -60,7 +60,7 @@
                                                 <i class="fas fa-clock mr-1"></i>{{ $item->due_date->format('d M Y, H:i') }}
                                             </span>
                                         @else
-                                            <span class="badge badge-success">
+                                            <span class="badge badge-secondary">
                                                 <i class="fas fa-clock mr-1"></i>{{ $item->due_date->format('d M Y, H:i') }}
                                             </span>
                                         @endif
@@ -68,13 +68,13 @@
                                     <td>
                                         @switch($status)
                                             @case('belum')
-                                                <span class="badge badge-secondary">Belum Dikumpulkan</span>
+                                                <span class="badge badge-warning">Belum Dikumpulkan</span>
                                                 @break
                                             @case('draft')
                                                 <span class="badge badge-warning">Draft</span>
                                                 @break
                                             @case('submitted')
-                                                <span class="badge badge-primary">Dikumpulkan</span>
+                                                <span class="badge badge-success">Dikumpulkan</span>
                                                 @break
                                             @case('graded')
                                                 <span class="badge badge-success">Sudah Dinilai</span>

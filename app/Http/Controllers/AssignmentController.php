@@ -241,12 +241,9 @@ class AssignmentController extends Controller
             ->where('student_id', Auth::id())
             ->first();
 
-        // Graded tidak bisa diubah, returned boleh submit ulang
         if ($existing && $existing->status === 'graded') {
             return response()->json(['message' => 'Tugas sudah dinilai, tidak bisa diubah.'], 422);
         }
-
-        $isDraft = $request->input('action') === 'draft';
 
         $validator = validator($request->all(), [
             'file_path'   => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx,png,jpg,jpeg|max:2048',
@@ -258,19 +255,17 @@ class AssignmentController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Jika bukan draft, minimal harus ada jawaban
-        if (!$isDraft) {
-            $hasFile    = $request->hasFile('file_path');
-            $hasText    = !empty(trim($request->text_answer ?? ''));
-            $hasOldFile = $existing?->file_path !== null;
+        // Wajib ada jawaban
+        $hasFile    = $request->hasFile('file_path');
+        $hasText    = !empty(trim($request->text_answer ?? ''));
+        $hasOldFile = $existing?->file_path !== null;
 
-            if (!$hasFile && !$hasText && !$hasOldFile) {
-                return response()->json([
-                    'errors' => [
-                        'text_answer' => ['Harap isi jawaban teks atau upload file sebelum mengumpulkan.']
-                    ]
-                ], 422);
-            }
+        if (!$hasFile && !$hasText && !$hasOldFile) {
+            return response()->json([
+                'errors' => [
+                    'text_answer' => ['Harap isi jawaban teks atau upload file sebelum mengumpulkan.']
+                ]
+            ], 422);
         }
 
         $data = [
@@ -278,8 +273,8 @@ class AssignmentController extends Controller
             'student_id'    => Auth::id(),
             'text_answer'   => $request->text_answer,
             'note'          => $request->note,
-            'status'        => $isDraft ? 'draft' : 'submitted',
-            'submitted_at'  => $isDraft ? null : now(),
+            'status'        => 'submitted',
+            'submitted_at'  => now(),
         ];
 
         if ($request->hasFile('file_path')) {
@@ -294,10 +289,8 @@ class AssignmentController extends Controller
             $data
         );
 
-        $message = $isDraft ? 'Draft berhasil disimpan.' : 'Tugas berhasil dikumpulkan.';
-
         return response()->json([
-            'message'  => $message,
+            'message'  => 'Tugas berhasil dikumpulkan.',
             'redirect' => route('assignments.show', $assignment->id),
         ]);
     }
