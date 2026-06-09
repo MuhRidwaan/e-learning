@@ -727,19 +727,21 @@ $(document).ready(function () {
         });
     });
 
-// =====================================================
-// BOOKMARK
-// =====================================================
+$(document).on('click', '.btnBookmark', function(e) {
+    e.preventDefault();
+    
+    const btn = $(this).closest('.btnBookmark'); 
+    const url = btn.data('url');
+    
+    // Mengambil CSRF token dari meta tag bawaan Laravel di head HTML
+    const CSRF = $('meta[name="csrf-token"]').attr('content'); 
 
-$(document).on('click', '.btnBookmark', function () {
+    // Cek di console log apakah URL dan CSRF terbaca dengan benar
+    console.log('URL:', url);
+    console.log('CSRF Token:', CSRF);
 
-    let btn = $(this);
-    let url = btn.attr('data-url');
-    if (!url && btn.data('material-id')) {
-        url = '/courses/' + courseId + '/materials/' + btn.data('material-id') + '/bookmark';
-    }
     if (!url) {
-        console.warn('Bookmark URL not found for button', btn);
+        console.error('Atribut data-url tidak terbaca!');
         return;
     }
 
@@ -751,30 +753,28 @@ $(document).on('click', '.btnBookmark', function () {
             'X-CSRF-TOKEN': CSRF
         },
         success: function (res) {
+            console.log('Respon server:', res);
 
-            console.log(res);
+            const statusBookmark = res.is_bookmarked !== undefined ? res.is_bookmarked : res.isBookmarked;
 
-            if (res.is_bookmarked) {
-
+            if (statusBookmark) {
                 btn.removeClass('btn-outline-warning')
                    .addClass('btn-warning');
-
-                $('.bookmarkText').text('Bookmarked');
-
+                
+                // Mengubah teks spesifik di dalam tombol yang sedang diklik
+                btn.find('.bookmarkText').text('Bookmarked');
             } else {
-
                 btn.removeClass('btn-warning')
                    .addClass('btn-outline-warning');
-
-                $('.bookmarkText').text('Bookmark');
-
+                
+                // Mengubah teks spesifik di dalam tombol yang sedang diklik
+                btn.find('.bookmarkText').text('Bookmark');
             }
         },
         error: function(xhr){
-            console.log(xhr.responseText);
+            console.error('Terjadi error pada AJAX:', xhr.status, xhr.responseText);
         }
     });
-
 });
 
 
