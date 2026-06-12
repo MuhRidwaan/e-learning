@@ -1,13 +1,15 @@
 @extends('main')
 
-@section('title', 'Dashboard Pelajar')
+@php use Illuminate\Support\Str; @endphp
+
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0 font-weight-bold">Dashboard Pelajar</h1>
+                <h1 class="m-0 font-weight-bold">Dashboard</h1>
             </div>
         </div>
     </div>
@@ -46,76 +48,112 @@
             </div>
         </div>
 
-        {{-- 2. KONTEN UTAMA: MATA PELAJARAN --}}
+        {{-- 2. PENGUMUMAN UNTUK PELAJAR --}}
+        @if(Auth::user()->hasRole('pelajar'))
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="font-weight-bold mb-0">Pengumuman Terbaru</h5>
+                            <small class="text-muted">Pengumuman terbaru untuk kamu ikuti.</small>
+                        </div>
+                        <a href="{{ route('announcements.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
+                    </div>
+                </div>
+
+                @forelse($announcements as $announcement)
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge badge-pill badge-light text-dark">
+                                        {{ $announcement->course->title ?? 'Pengumuman Umum' }}
+                                    </span>
+                                    <small class="text-muted">{{ $announcement->published_at->format('d M Y') }}</small>
+                                </div>
+                                <h5 class="font-weight-bold">{{ $announcement->title }}</h5>
+                                <p class="text-muted small mb-3">{{ Str::limit($announcement->content, 140) }}</p>
+                                <a href="{{ route('announcements.show', $announcement) }}" class="btn btn-sm btn-primary">Baca Selengkapnya</a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="col-12">
+                        <div class="alert alert-info mb-0">
+                            Belum ada pengumuman terbaru untuk saat ini.
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+        @endif
+
+        {{-- 3. KONTEN UTAMA: MATA PELAJARAN --}}
         <div class="row">
             <div class="col-md-8">
                 <h5 class="mb-3 font-weight-bold">Kursus Aktif</h5>
                 <div class="row">
-                    {{-- Card Bahasa Inggris --}}
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <span class="badge badge-pill px-3 mb-2" style="background: #e0e7ff; color: #4338ca;">Bahasa</span>
-                                    <i class="fas fa-globe-americas text-muted"></i>
-                                </div>
-                                <h5 class="font-weight-bold mt-2">Bahasa Inggris</h5>
-                                <p class="text-muted small">Materi: Business Communication</p>
-                                <hr>
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span>Progres</span>
-                                    <span class="font-weight-bold text-primary">65%</span>
-                                </div>
-                                <div class="progress rounded-pill" style="height: 8px;">
-                                    <div class="progress-bar bg-primary" style="width: 65%"></div>
+                    @if(Auth::user()->hasRole('pengajar'))
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
+                                <div class="card-body">
+                                    <h6 class="text-uppercase text-muted">Kelas Terbit</h6>
+                                    <h3 class="font-weight-bold">{{ $pengajarStats['published_courses'] }}</h3>
+                                    <p class="mb-0 text-muted">Kelas aktif yang kamu ajar</p>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
+                                <div class="card-body">
+                                    <h6 class="text-uppercase text-muted">Siswa Aktif</h6>
+                                    <h3 class="font-weight-bold">{{ $pengajarStats['active_students'] }}</h3>
+                                    <p class="mb-0 text-muted">Siswa terdaftar di kelas kamu</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
+                                <div class="card-body">
+                                    <h6 class="text-uppercase text-muted">Total Enroll</h6>
+                                    <h3 class="font-weight-bold">{{ $pengajarStats['active_enrollments'] }}</h3>
+                                    <p class="mb-0 text-muted">Pendaftaran siswa di semua kelas kamu</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
 
-                    {{-- Card Bahasa Arab --}}
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <span class="badge badge-pill px-3 mb-2" style="background: #fef3c7; color: #b45309;">Bahasa</span>
-                                    <i class="fas fa-language text-muted"></i>
+                        @if(Auth::user()->hasRole('pelajar') || Auth::user()->hasRole('pengajar'))
+                        @if(isset($courses) && $courses->isNotEmpty())
+                            @foreach($courses as $course)
+                                <div class="col-md-6 mb-4">
+                                    <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="badge badge-pill px-3 mb-2" style="background: #e9eefb; color: #1f2937;">
+                                                    {{ $course->instructor->name ?? 'Instruktur' }}
+                                                </span>
+                                                <i class="fas fa-chalkboard text-muted"></i>
+                                            </div>
+                                            <h5 class="font-weight-bold mt-2">{{ $course->title }}</h5>
+                                            <p class="text-muted small">{{ Str::limit($course->description ?? '', 120) }}</p>
+                                            <hr>
+                                            <a href="{{ route('courses.show', $course) }}" class="btn btn-sm btn-primary">Buka Kelas</a>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h5 class="font-weight-bold mt-2">Bahasa Arab</h5>
-                                <p class="text-muted small">Materi: Dasar Percakapan</p>
-                                <hr>
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span>Progres</span>
-                                    <span class="font-weight-bold text-warning">40%</span>
-                                </div>
-                                <div class="progress rounded-pill" style="height: 8px;">
-                                    <div class="progress-bar bg-warning" style="width: 40%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Card Matematika --}}
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between">
-                                    <span class="badge badge-pill px-3 mb-2" style="background: #d1fae5; color: #059669;">Sains</span>
-                                    <i class="fas fa-square-root-alt text-muted"></i>
-                                </div>
-                                <h5 class="font-weight-bold mt-2">Matematika</h5>
-                                <p class="text-muted small">Materi: Statistik Dasar</p>
-                                <hr>
-                                <div class="d-flex justify-content-between small mb-1">
-                                    <span>Progres</span>
-                                    <span class="font-weight-bold text-success">92%</span>
-                                </div>
-                                <div class="progress rounded-pill" style="height: 8px;">
-                                    <div class="progress-bar bg-success" style="width: 92%"></div>
+                            @endforeach
+                        @else
+                            <div class="col-12">
+                                <div class="alert alert-info mb-0">
+                                    Belum ada kursus aktif yang sesuai.
                                 </div>
                             </div>
+                        @endif
+                    @else
+                        <div class="col-12">
+                            <p class="text-muted">Konten kursus akan tampil di sini.</p>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 
