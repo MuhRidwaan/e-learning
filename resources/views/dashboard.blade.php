@@ -48,48 +48,48 @@
             </div>
         </div>
 
-        {{-- 2. PENGUMUMAN UNTUK PELAJAR --}}
-        @if(Auth::user()->hasRole('pelajar'))
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h5 class="font-weight-bold mb-0">Pengumuman Terbaru</h5>
-                            <small class="text-muted">Pengumuman terbaru untuk kamu ikuti.</small>
-                        </div>
-                        <a href="{{ route('announcements.index') }}" class="btn btn-sm btn-outline-primary">Lihat Semua</a>
-                    </div>
-                </div>
-
-                @forelse($announcements as $announcement)
-                    <div class="col-md-6 mb-4">
-                        <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="badge badge-pill badge-light text-dark">
-                                        {{ $announcement->course->title ?? 'Pengumuman Umum' }}
-                                    </span>
-                                    <small class="text-muted">{{ $announcement->published_at->format('d M Y') }}</small>
-                                </div>
-                                <h5 class="font-weight-bold">{{ $announcement->title }}</h5>
-                                <p class="text-muted small mb-3">{{ Str::limit($announcement->content, 140) }}</p>
-                                <a href="{{ route('announcements.show', $announcement) }}" class="btn btn-sm btn-primary">Baca Selengkapnya</a>
-                            </div>
-                        </div>
-                    </div>
-                @empty
-                    <div class="col-12">
-                        <div class="alert alert-info mb-0">
-                            Belum ada pengumuman terbaru untuk saat ini.
-                        </div>
-                    </div>
-                @endforelse
-            </div>
-        @endif
-
         {{-- 3. KONTEN UTAMA: MATA PELAJARAN --}}
         <div class="row">
             <div class="col-md-8">
+                {{-- 2. PENGUMUMAN UNTUK PELAJAR --}}
+                @if(Auth::user()->hasRole('pelajar'))
+                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px; overflow: hidden;">
+                        <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center w-100">
+                            <div>
+                                <h5 class="font-weight-bold mb-0">Pengumuman Terbaru</h5>
+                                <small class="text-muted">Pengumuman terbaru untuk kamu ikuti.</small>
+                            </div>
+                            <a href="{{ route('announcements.index') }}" class="btn btn-sm btn-outline-primary ml-auto">Lihat Semua</a>
+                        </div>
+                        <div class="card-body px-4 pb-4 pt-0">
+                            @forelse($announcements as $announcement)
+                                <div class="d-flex align-items-start border-bottom py-2 {{ $loop->last ? 'border-0 pb-0' : '' }}">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div>
+                                                <span class="badge badge-light border mr-2 text-dark" style="font-size: 0.7rem;">
+                                                    {{ $announcement->course->title ?? 'Pengumuman Umum' }}
+                                                </span>
+                                                <span class="font-weight-bold" style="font-size: 0.9rem;">{{ $announcement->title }}</span>
+                                            </div>
+                                            <small class="text-muted" style="font-size: 0.75rem;">{{ $announcement->published_at->format('d M Y') }}</small>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-1">
+                                            <p class="text-muted mb-0" style="font-size: 0.8rem; line-height: 1.3;">{{ Str::limit($announcement->content, 120) }}</p>
+                                            <a href="{{ route('announcements.show', $announcement) }}" class="btn btn-sm btn-light text-primary rounded-circle flex-shrink-0" style="width: 28px; height: 28px; padding: 0; line-height: 28px; text-align: center; margin-left: 10px;">
+                                                <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="alert alert-info mb-0 mt-3">
+                                    Belum ada pengumuman terbaru untuk saat ini.
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                @endif
                 <h5 class="mb-3 font-weight-bold">Kursus Aktif</h5>
                 <div class="row">
                     @if(Auth::user()->hasRole('pengajar'))

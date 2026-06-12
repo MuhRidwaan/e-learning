@@ -44,11 +44,13 @@
         </button>
 
         <button type="button"
-                id="btnComplete"
+                id="btnMarkComplete"
                 data-url="{{ route('courses.materials.progress', [$course->id, $material->id]) }}"
+                data-material-id="{{ $material->id }}"
+                data-completed="{{ ($progress?->is_completed ?? false) ? '1' : '0' }}"
                 class="btn {{ ($progress?->is_completed ?? false) ? 'btn-success' : 'btn-outline-success' }}">
 
-            <i class="fas fa-check-circle"></i>
+            <i class="fas {{ ($progress?->is_completed ?? false) ? 'fa-check-circle' : 'fa-circle' }} mr-1"></i>
 
             <span id="completeText">
                 {{ ($progress?->is_completed ?? false) ? 'Selesai' : 'Tandai Selesai' }}
@@ -582,10 +584,10 @@ $(document).ready(function () {
                 if ($btnMC.length) {
                     $btnMC.attr('data-material-id', mat.id).attr('data-completed', prog.is_completed ? '1' : '0');
                     if (prog.is_completed) {
-                        $btnMC.removeClass('btn-success').addClass('btn-outline-success')
+                        $btnMC.removeClass('btn-outline-success').addClass('btn-success')
                               .html('<i class="fas fa-check-circle mr-1"></i> Selesai');
                     } else {
-                        $btnMC.removeClass('btn-outline-success').addClass('btn-success')
+                        $btnMC.removeClass('btn-success').addClass('btn-outline-success')
                               .html('<i class="far fa-circle mr-1"></i> Tandai Selesai');
                     }
                 }
@@ -710,12 +712,22 @@ $(document).ready(function () {
             data: { _token: CSRF, is_completed: isCompleted ? 0 : 1 },
             success: function (res) {
                 btn.prop('disabled', false);
+                
+                let icon = $(`.sidebar-mat-item[data-id="${materialId}"]`).find('div.mr-2 i');
+                let isActive = $(`.sidebar-mat-item[data-id="${materialId}"]`).hasClass('bg-primary');
+
                 if (res.is_completed) {
-                    btn.data('completed', '1').removeClass('btn-success').addClass('btn-outline-success')
+                    btn.data('completed', '1').removeClass('btn-outline-success').addClass('btn-success')
                        .html('<i class="fas fa-check-circle mr-1"></i> Selesai');
+                       
+                    icon.removeClass('far fa-circle fas fa-play-circle text-muted text-white text-success')
+                        .addClass('fas fa-check-circle ' + (isActive ? 'text-white' : 'text-success'));
                 } else {
-                    btn.data('completed', '0').removeClass('btn-outline-success').addClass('btn-success')
+                    btn.data('completed', '0').removeClass('btn-success').addClass('btn-outline-success')
                        .html('<i class="far fa-circle mr-1"></i> Tandai Selesai');
+                       
+                    icon.removeClass('fas fa-check-circle text-success text-white')
+                        .addClass(isActive ? 'fas fa-play-circle text-white' : 'far fa-circle text-muted');
                 }
                 Swal.fire({ icon:'success', title:'Berhasil!', text: res.message,
                     toast:true, position:'top-end', timer:2000, showConfirmButton:false });
@@ -778,36 +790,7 @@ $(document).on('click', '.btnBookmark', function(e) {
 });
 
 
-// =====================================================
-// MARK COMPLETE
-// =====================================================
 
-$(document).on('click', '#btnComplete', function () {
-
-    let btn = $(this);
-
-    $.ajax({
-        url: btn.data('url'),
-        type: 'POST',
-        data: {
-            _token: CSRF,
-            is_completed: true
-        },
-        success: function (res) {
-
-            btn.removeClass('btn-outline-success')
-               .addClass('btn-success');
-
-            $('#completeText').text('Selesai');
-
-            $('#progressBar')
-                .css('width', '100%')
-                .text('100%');
-
-        }
-    });
-
-});
 
     // ── Delete material ───────────────────────────────────────────────────
     ajaxDelete('.btn-delete-material', 'Hapus materi ini?');

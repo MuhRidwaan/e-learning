@@ -25,7 +25,7 @@ class DashboardController extends Controller
                 ->whereNotNull('published_at')
                 ->where('published_at', '<=', now())
                 ->orderByDesc('published_at')
-                ->take(4)
+                ->take(3)
                 ->get();
 
             $courses = $user->enrolledCourses()
