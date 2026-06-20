@@ -8,7 +8,6 @@ use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use App\Models\ActivityLog;
 
 class RoleController extends Controller
 {
@@ -56,11 +55,7 @@ class RoleController extends Controller
 
         $role->permissions()->sync($request->permissions ?? []);
 
-<<<<<<< Updated upstream
-        ActivityLog::log('Role baru dibuat: ' . $role->name, 'roles', $role);
-=======
         ActivityLog::log("Menambahkan role baru: {$role->name}", $role, ['name' => $role->name, 'description' => $role->description], 'role');
->>>>>>> Stashed changes
 
         return response()->json([
             'message'  => 'Role berhasil ditambahkan.',
@@ -102,11 +97,7 @@ class RoleController extends Controller
 
         $role->permissions()->sync($request->permissions ?? []);
 
-<<<<<<< Updated upstream
-        ActivityLog::log('Role diperbarui: ' . $role->name, 'roles', $role);
-=======
         ActivityLog::log("Memperbarui role: {$role->name}", $role, $role->getChanges(), 'role');
->>>>>>> Stashed changes
 
         return response()->json([
             'message'  => 'Role berhasil diupdate.',
@@ -116,18 +107,13 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-<<<<<<< Updated upstream
         if (!Auth::user()->hasPermission('roles.delete')) {
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 
-        $role->delete();
-        ActivityLog::log('Role dihapus: ' . $role->name, 'roles');
-=======
         $name = $role->name;
         $role->delete();
         ActivityLog::log("Menghapus role: {$name}", $role, ['name' => $name], 'role');
->>>>>>> Stashed changes
         return response()->json(['message' => 'Role berhasil dihapus.']);
     }
 }

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use App\Models\ActivityLog;
 
 class UserController extends Controller
 {
@@ -61,11 +60,7 @@ class UserController extends Controller
 
         $user->roles()->attach($request->role_id, ['model_type' => User::class]);
 
-<<<<<<< Updated upstream
-        ActivityLog::log('User baru ditambahkan: ' . $user->name, 'users', $user);
-=======
         ActivityLog::log("Menambahkan user baru: {$user->name} ({$user->email})", $user, $user->toArray(), 'user');
->>>>>>> Stashed changes
 
         return response()->json([
             'message' => 'User berhasil ditambahkan.',
@@ -112,11 +107,7 @@ class UserController extends Controller
 
         $user->roles()->sync([$request->role_id => ['model_type' => User::class]]);
 
-<<<<<<< Updated upstream
-        ActivityLog::log('User diperbarui: ' . $user->name, 'users', $user);
-=======
         ActivityLog::log("Memperbarui data user: {$user->name} ({$user->email})", $user, $user->getChanges(), 'user');
->>>>>>> Stashed changes
 
         return response()->json([
             'message' => 'User berhasil diupdate.',
@@ -126,19 +117,14 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-<<<<<<< Updated upstream
         if (!Auth::user()->hasPermission('users.delete')) {
             return response()->json(['message' => 'Unauthorized action.'], 403);
         }
 
-        $user->delete();
-        ActivityLog::log('User dihapus: ' . $user->name, 'users');
-=======
         $name = $user->name;
         $email = $user->email;
         $user->delete();
         ActivityLog::log("Menghapus user: {$name} ({$email})", $user, ['name' => $name, 'email' => $email], 'user');
->>>>>>> Stashed changes
         return response()->json(['message' => 'User berhasil dihapus.']);
     }
 
