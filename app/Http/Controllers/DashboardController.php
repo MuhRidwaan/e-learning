@@ -16,7 +16,7 @@ class DashboardController extends Controller
 
         if ($user->hasRole('pimpinan')) {
 
-     return redirect()->route('pimpinan.dashboard');
+     return redirect()->route('dashboard.pimpinan');
 }
 
         $announcements = [];

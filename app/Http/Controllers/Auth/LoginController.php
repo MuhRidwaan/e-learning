@@ -32,7 +32,7 @@ class LoginController extends Controller
     ActivityLog::log('User login', 'auth');
 
     if ($user->hasRole('pimpinan') && !$user->hasRole('super_admin') ) {
-        return redirect()->route('pimpinan.dashboard');
+        return redirect()->route('dashboard.pimpinan');
     }
 
     return redirect()->route('dashboard');
