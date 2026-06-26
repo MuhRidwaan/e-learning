@@ -217,7 +217,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-8">
                                 <h2 class="font-weight-bold">Halo, Pelajar! 👋</h2>
-                                <p class="mb-4" style="font-size: 1.1rem; opacity: 0.9;">Tetap semangat belajar dan pastikan semua deadline tugasmu aman!</p>
+                                <p class="mb-4" style="font-size: 1.1rem; opacity: 0.9;">Jadikan setiap hari sebagai kesempatan untuk tumbuh. Ilmu yang kamu serap hari ini adalah jembatan menuju masa depanmu nanti.</p>
                                 <a href="{{ route('courses.index') }}" class="btn btn-light rounded-pill px-5 text-primary font-weight-bold shadow-sm">Mulai Belajar</a>
                             </div>
                         </div>
