@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Announcement;
+use App\Models\Enrollment;
 use App\Models\Course;
-// use App\Models\Assignment; // Dimatikan sementara karena modelnya tidak ada
-use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Syllabus;
+use App\Models\Assignment;
+use App\Models\AssignmentSubmission;
+use App\Models\Material;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -14,38 +19,55 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        // 1. TAMPILAN ROLE: SUPER ADMIN
-        if ($user->hasRole('super_admin')) {
-            $stats = [
-                'total_users'       => User::count(),
-                'total_courses'     => Course::count(),
-                'total_syllabus'    => 0,
-                'total_assignments' => 0, // DIUBAH: Sementara diisi 0 agar tidak error
-            ];
-            return view('dashboard', compact('stats'));
+        // 1. Routing pimpinan
+        if ($user->hasRole('pimpinan')) {
+            return redirect()->route('dashboard.pimpinan');
         }
 
-        // 2. TAMPILAN ROLE: STAF AKADEMIK
-        if ($user->hasRole('akademik')) {
-            $stats = [
-                'total_courses'  => Course::count(),
-                'total_syllabus' => 0,
-            ];
-            return view('dashboard', compact('stats'));
-        }
-
-        // 3. TAMPILAN ROLE: PENGAJAR
-        if ($user->hasRole('pengajar')) {
-            $taughtCourses = Course::all();
-            return view('dashboard', compact('taughtCourses'));
-        }
-
-        // 4. TAMPILAN ROLE: PELAJAR / SISWA (Default)
-        $activeCourses = Course::limit(2)->get(); 
+        // 2. Inisialisasi variabel
+        $stats = [
+            'total_users' => 0,
+            'total_courses' => 0,
+            'total_syllabus' => 0,
+            'teacher_materials_count' => 0,
+            'pending_grading_count' => 0
+        ];
         
-        // DIUBAH: Dibikin array kosong [] dulu biar tampilan "Hore! Tidak ada tugas terdekat" aktif dan gak error
-        $upcomingAssignments = []; 
+        $courses = collect();
+        $taughtCourses = collect();
+        $activeCourses = collect();
+        $upcomingAssignments = collect();
 
-        return view('dashboard', compact('activeCourses', 'upcomingAssignments'));
+        // 3. Logic untuk Super Admin & Akademik
+        if ($user->hasRole('super_admin') || $user->hasRole('akademik')) {
+        $stats['total_users'] = User::count();
+        $stats['total_courses'] = Course::count();
+        $stats['total_syllabus'] = Syllabus::count();
+        }
+
+        // 4. Logic untuk Pengajar
+        if ($user->hasRole('pengajar')) {
+            $taughtCourses = $user->taughtCourses()->where('status', 'published')->get();
+            $courseIds = $taughtCourses->pluck('id')->all();
+            
+            $stats['teacher_materials_count'] = Material::whereIn('course_id', $courseIds)->count();
+            $stats['pending_grading_count'] = AssignmentSubmission::where('status', 'pending')
+                ->whereIn('course_id', $courseIds)->count();
+        }
+
+        // 5. Logic untuk Pelajar
+        if ($user->hasRole('pelajar')) {
+            $activeCourses = $user->enrolledCourses()->where('enrollments.status', 'active')->get();
+            $upcomingAssignments = Assignment::where('due_date', '>=', now())->take(5)->get();
+        }
+
+        // 6. Return ke view 'dashboard'
+        return view('dashboard', compact(
+            'stats', 
+            'courses', 
+            'taughtCourses', 
+            'activeCourses', 
+            'upcomingAssignments'
+        ));
     }
 }
