@@ -217,8 +217,7 @@
                                 </div>
                             </div>
                         </div>
-                        @endforelse
-                    @endif
+                    </div>
                 </div>
             </div>
 
