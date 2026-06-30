@@ -180,7 +180,7 @@
                                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                                     <div>
                                         <div class="text-success mb-2"><i class="fas fa-chalkboard fa-2x"></i></div>
-                                        <h5 class="font-weight-bold text-dark mb-1">{{ $course->name }}</h5>
+                                        <h5 class="font-weight-bold text-dark mb-1">{{ $course->title }}</h5>
                                         <p class="text-muted small">{{ Str::limit($course->description, 80, '...') }}</p>
                                     </div>
                                     <div>
@@ -260,7 +260,7 @@
                                     <div class="card shadow-sm border-0 h-100" style="border-radius: 15px;">
                                         <div class="card-body p-4 d-flex flex-column justify-content-between">
                                             <div>
-                                                <h5 class="font-weight-bold text-primary mb-1">{{ $course->name }}</h5>
+                                                <h5 class="font-weight-bold text-primary mb-1">{{ $course->title }}</h5>
                                                 <p class="text-muted small">{{ Str::limit($course->description, 80, '...') }}</p>
                                             </div>
                                             <div>

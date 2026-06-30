@@ -151,29 +151,16 @@
                     @endif
 
                     {{-- Rekap Nilai (Pengajar & Super Admin) --}}
-                    @if(Auth::user()->hasPermission('reports.view') && !Auth::user()->hasRole('pelajar'))
-                        <li class="nav-item {{ request()->routeIs('gradebook.*') ? 'menu-open' : '' }}">
-                            <a href="#"
-                                class="nav-link {{ request()->routeIs('gradebook.*') ? 'active' : '' }}">
-                                <i class="nav-icon fas fa-chart-bar"></i>
-                                <p>
-                                    Rekap Nilai
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                @foreach(Auth::user()->hasRole('super_admin') ? \App\Models\Course::all() : \App\Models\Course::where('instructor_id', Auth::id())->orWhereHas('instructors', fn($q) => $q->where('user_id', Auth::id()))->get() as $course)
-                                    <li class="nav-item">
-                                        <a href="{{ route('gradebook.course', $course->id) }}"
-                                            class="nav-link {{ request()->routeIs('gradebook.course') && request()->route('course')?->id == $course->id ? 'active' : '' }}">
-                                            <i class="far fa-circle nav-icon"></i>
-                                            <p>{{ Str::limit($course->title, 20) }}</p>
-                                        </a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </li>
-                    @endif
+                    {{-- Rekap Nilai (Pengajar & Super Admin) --}}
+@if(Auth::user()->hasPermission('reports.view') && !Auth::user()->hasRole('pelajar'))
+    <li class="nav-item">
+        <a href="{{ route('gradebook.courses') }}"
+            class="nav-link {{ request()->routeIs('gradebook.courses') || request()->routeIs('gradebook.course') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-chart-bar"></i>
+            <p>Rekap Nilai</p>
+        </a>
+    </li>
+@endif
 
                     @if (auth()->user()->hasPermission('assignments.view'))
                         <li class="nav-item">

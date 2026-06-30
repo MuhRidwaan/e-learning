@@ -42,19 +42,36 @@ use App\Models\QuizAttempt;
 
     return Course::orderBy('title')->get();
 }
-        
-        public function index()
+
+    public function index()
     {
-        $quizzes = Quiz::with('course')
-        ->withCount('questions')
-        ->latest()
-        ->get();
+        if (Auth::user()->hasRole('pengajar')) {
+            $courseIds = $this->getTeacherCourses()->pluck('id');
 
-        $totalQuiz = Quiz::count();
+            $quizzes = Quiz::with('course')
+                ->withCount('questions')
+                ->whereIn('course_id', $courseIds)
+                ->latest()
+                ->get();
 
-        return view(
-        'quizzes.index', compact('quizzes','totalQuiz')
-        );
+            $totalQuiz = $quizzes->count();
+        } elseif (Auth::user()->hasRole('pelajar')) {
+            $courseIds = Auth::user()->enrolledCourses()->pluck('courses.id');
+
+            $quizzes = Quiz::with('course')
+                ->withCount('questions')
+                ->whereIn('course_id', $courseIds)
+                ->latest()
+                ->get();
+
+            $totalQuiz = $quizzes->count();
+        } else {
+            // Super admin & akademik lihat semua
+            $quizzes   = Quiz::with('course')->withCount('questions')->latest()->get();
+            $totalQuiz = $quizzes->count();
+        }
+
+        return view('quizzes.index', compact('quizzes', 'totalQuiz'));
     }
 
         

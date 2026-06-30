@@ -82,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/gradebook', [GradebookController::class, 'index'])->name('gradebook.index');
     Route::get('/gradebook/export/pdf', [GradebookController::class, 'exportPdfStudent'])->name('gradebook.export.pdf');
     Route::get('/gradebook/export/excel', [GradebookController::class, 'exportExcelStudent'])->name('gradebook.export.excel');
+    Route::get('/gradebook/courses', [GradebookController::class, 'courses'])->name('gradebook.courses');
     Route::get('/gradebook/{course}', [GradebookController::class, 'course'])->name('gradebook.course');
     Route::get('/gradebook/{course}/export/pdf', [GradebookController::class, 'exportPdfCourse'])->name('gradebook.export.pdf.course');
     Route::get('/gradebook/{course}/export/excel', [GradebookController::class, 'exportExcelCourse'])->name('gradebook.export.excel.course');
