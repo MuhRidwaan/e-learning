@@ -47,19 +47,6 @@ class DashboardController extends Controller
 
         // 4. Logic untuk Pengajar
         if ($user->hasRole('pengajar')) {
-<<<<<<< HEAD
-            $taughtCourses = $user->taughtCourses()->get();
-            $courseIds = $taughtCourses->pluck('id')->all();
-            
-            $stats['teacher_materials_count'] = Material::whereHas('module', function ($q) use ($courseIds) {
-                $q->whereIn('course_id', $courseIds);
-            })->count();
-            $stats['pending_grading_count'] = AssignmentSubmission::where('status', 'pending')
-                ->whereHas('assignment', function ($q) use ($courseIds) {
-                    $q->whereIn('course_id', $courseIds);
-                })->count();
-        }
-=======
         $taughtCourses = $user->taughtCourses()->where('status', 'published')->get();
         $courseIds = $taughtCourses->pluck('id')->all();
     
@@ -71,7 +58,6 @@ class DashboardController extends Controller
         ->whereIn('assignment_id', $assignmentIds) 
         ->count();
 }
->>>>>>> e076b69bd71db20a62e645dac44e8fb8cb6d8817
 
         // 5. Logic untuk Pelajar
         if ($user->hasRole('pelajar')) {

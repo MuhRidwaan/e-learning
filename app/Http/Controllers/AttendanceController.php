@@ -126,4 +126,18 @@ class AttendanceController extends Controller
 
     return response()->stream($callback, 200, $headers);
 }
+    public function studentHistory($scheduleId)
+{
+    $schedule = Schedule::findOrFail($scheduleId);
+
+    $attendances = Attendance::where('schedule_id', $scheduleId)
+        ->where('student_id', auth()->id())
+        ->orderBy('attendance_date', 'desc')
+        ->get();
+
+    return view('attendance.student-history', compact(
+        'schedule',
+        'attendances'
+    ));
+}
 }

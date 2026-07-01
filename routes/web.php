@@ -84,6 +84,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/attendance/{scheduleId}', [AttendanceController::class, 'show'])->name('attendance.show');
     Route::post('/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
     Route::get('/attendance/report/{scheduleId}', [AttendanceController::class, 'report'])->name('attendance.report');
+    Route::get('/attendance/my-history/{scheduleId}', [AttendanceController::class, 'studentHistory'])
+    ->name('attendance.student');
 
     Route::get('/attendance/report/{scheduleId}/export-csv', [AttendanceController::class, 'exportCsv'])
         ->name('attendance.export.csv');
