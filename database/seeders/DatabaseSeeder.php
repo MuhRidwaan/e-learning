@@ -98,5 +98,10 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+
+        // Call the additional dummy data seeder to expand the database
+        $this->call([
+            DummyDataSeeder::class
+        ]);
     }
 }

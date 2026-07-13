@@ -9,7 +9,7 @@ class LandingPageController extends Controller
 {
     public function index()
     {
-        $courses = Course::latest()->take(3)->get();
+        $courses = Course::oldest()->take(3)->get();
         return view('landing.index', compact('courses'));
     }
 
