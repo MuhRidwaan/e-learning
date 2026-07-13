@@ -28,6 +28,12 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
+// Landing page
+use App\Http\Controllers\LandingPageController;
+Route::get('/', [LandingPageController::class, 'index'])->name('home');
+Route::get('/catalog', [LandingPageController::class, 'catalog'])->name('catalog');
+Route::get('/course/{id}/preview', [LandingPageController::class, 'preview'])->name('course.preview');
+
 // Auth
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
@@ -39,7 +45,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 
 // Protected routes
 Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard-pimpinan',[PimpinanDashboardController::class,'index'])->name('dashboard.pimpinan');
 
     // Profile
