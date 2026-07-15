@@ -43,6 +43,16 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);
 
+// Utility routes (untuk deploy di shared hosting)
+Route::get('/create-storage-link', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage link berhasil dibuat!';
+    } catch (\Exception $e) {
+        return 'Gagal membuat storage link: ' . $e->getMessage();
+    }
+});
+
 // Protected routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
