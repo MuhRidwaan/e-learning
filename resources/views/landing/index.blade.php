@@ -114,7 +114,7 @@
             </div>
           </div>
           <div class="col-lg-6 mt-5 mt-lg-0 text-center">
-            {{-- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_6bJt0Pai42XEKuEdlpMV33zsWxZDK1-eBg-dZ1DhKx8RpPN8qYX3Km7OR7WwFb9Rjlizj-tSRa1alHx2NH5TZAXsvhYmzzAh4WH1r3RiBUI7bH1QqlbiIy5j6pbKhze4bm8S-mvHyqPmE4j_trpuYf24oWEOFzCVStYNfzpCFtuY41nLsRTIWpEZKRQB-ZV4bqT7-AKzFVVRtlEk6hektxaaHusurlURRZ3vhnfbzWCQOAHu8DZChGgD6mGxFhL1N_b9sxL7shU" class="img-fluid rounded shadow-lg" alt="Hero Image" style="transform: rotate(2deg);"> --}}
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_6bJt0Pai42XEKuEdlpMV33zsWxZDK1-eBg-dZ1DhKx8RpPN8qYX3Km7OR7WwFb9Rjlizj-tSRa1alHx2NH5TZAXsvhYmzzAh4WH1r3RiBUI7bH1QqlbiIy5j6pbKhze4bm8S-mvHyqPmE4j_trpuYf24oWEOFzCVStYNfzpCFtuY41nLsRTIWpEZKRQB-ZV4bqT7-AKzFVVRtlEk6hektxaaHusurlURRZ3vhnfbzWCQOAHu8DZChGgD6mGxFhL1N_b9sxL7shU" class="img-fluid rounded shadow-lg" alt="Hero Image" style="transform: rotate(2deg);">
           </div>
         </div>
       </div>
