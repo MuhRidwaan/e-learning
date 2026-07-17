@@ -63,7 +63,7 @@
   <nav class="main-header navbar navbar-expand-md navbar-light navbar-white fixed-top shadow-sm">
     <div class="container">
       <a href="#" class="navbar-brand">
-        <span class="brand-text font-weight-bold text-primary">EduCommand</span>
+        <span class="brand-text font-weight-bold text-primary">Learnova</span>
       </a>
 
       <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,15 +106,15 @@
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6">
-            <h1 class="mb-4">Raih Masa Depanmu <br><span class="text-primary-custom">bersama EduCommand</span></h1>
-            <p class="lead mb-5 text-white">Akses kursus kelas dunia dari pakar industri dan akademisi terkemuka. Mulai perjalanan belajarmu hari ini dengan pendekatan pembelajaran terstruktur kami.</p>
+            <h1 class="mb-4">WEB-BASED LEARNING MANAGEMENT SYSTEM<br><span class="text-primary-custom">Learn Smarter. Grow Further.</span></h1>
+            <p class="lead mb-5 text-white">Belajar lebih cerdas, mengajar lebih mudah, dan memantau perkembangan pembelajaran dalam satu platform.</p>
             <div>
                 <a href="#catalog" class="btn btn-primary btn-lg mr-3 shadow">Jelajahi Kursus <i class="fas fa-arrow-right ml-2"></i></a>
-                <a href="{{ route('register') }}" class="btn btn-light btn-lg text-primary shadow mt-3 mt-sm-0">Bergabung Gratis</a>
+                <a href="{{ route('register') }}" class="btn btn-light btn-lg text-primary shadow mt-3 mt-sm-0">Daftar Sekarang</a>
             </div>
           </div>
           <div class="col-lg-6 mt-5 mt-lg-0 text-center">
-            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_6bJt0Pai42XEKuEdlpMV33zsWxZDK1-eBg-dZ1DhKx8RpPN8qYX3Km7OR7WwFb9Rjlizj-tSRa1alHx2NH5TZAXsvhYmzzAh4WH1r3RiBUI7bH1QqlbiIy5j6pbKhze4bm8S-mvHyqPmE4j_trpuYf24oWEOFzCVStYNfzpCFtuY41nLsRTIWpEZKRQB-ZV4bqT7-AKzFVVRtlEk6hektxaaHusurlURRZ3vhnfbzWCQOAHu8DZChGgD6mGxFhL1N_b9sxL7shU" class="img-fluid rounded shadow-lg" alt="Hero Image" style="transform: rotate(2deg);">
+            {{-- <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_6bJt0Pai42XEKuEdlpMV33zsWxZDK1-eBg-dZ1DhKx8RpPN8qYX3Km7OR7WwFb9Rjlizj-tSRa1alHx2NH5TZAXsvhYmzzAh4WH1r3RiBUI7bH1QqlbiIy5j6pbKhze4bm8S-mvHyqPmE4j_trpuYf24oWEOFzCVStYNfzpCFtuY41nLsRTIWpEZKRQB-ZV4bqT7-AKzFVVRtlEk6hektxaaHusurlURRZ3vhnfbzWCQOAHu8DZChGgD6mGxFhL1N_b9sxL7shU" class="img-fluid rounded shadow-lg" alt="Hero Image" style="transform: rotate(2deg);"> --}}
           </div>
         </div>
       </div>
