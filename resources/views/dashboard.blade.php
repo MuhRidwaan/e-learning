@@ -292,11 +292,18 @@
                             @if(isset($upcomingAssignments))
                                 @forelse($upcomingAssignments as $assignment)
                                     <a href="{{ route('assignments.show', ['assignment' => $assignment->id]) }}" class="text-decoration-none text-dark">
-                                        <div class="d-flex align-items-center mb-3 border-bottom pb-3">
-                                            <div class="mr-3 text-danger"><i class="fas fa-edit fa-lg"></i></div>
-                                            <div>
-                                                <h6 class="font-weight-bold mb-0 text-dark">{{ $assignment->title ?? $assignment->name }}</h6>
-                                                <small class="text-danger font-weight-bold">Batas: {{ $assignment->due_date }}</small>
+                                        <div class="d-flex align-items-start mb-3 border-bottom pb-3">
+                                            <div class="mr-3 text-danger mt-1"><i class="fas fa-edit fa-lg"></i></div>
+                                            <div style="min-width: 0;">
+                                                <h6 class="font-weight-bold mb-1 text-dark" style="font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $assignment->title ?? $assignment->name }}</h6>
+                                                @if($assignment->course)
+                                                    <span class="badge badge-primary badge-pill mb-1" style="font-size: 0.7rem; font-weight: 600;">
+                                                        <i class="fas fa-book-open mr-1"></i>{{ $assignment->course->title }}
+                                                    </span><br>
+                                                @endif
+                                                <small class="text-danger font-weight-bold">
+                                                    <i class="fas fa-clock mr-1"></i>{{ \Carbon\Carbon::parse($assignment->due_date)->translatedFormat('d M Y, H:i') }}
+                                                </small>
                                             </div>
                                         </div>
                                     </a>
