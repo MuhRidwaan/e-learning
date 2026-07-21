@@ -53,6 +53,98 @@ Route::get('/create-storage-link', function () {
     }
 });
 
+Route::get('/optimize-clear', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response('<pre style="font-family:monospace;padding:20px;">✅ Optimize Clear Berhasil!<br><br>' . htmlspecialchars($output) . '</pre>');
+    } catch (\Exception $e) {
+        return response('<pre style="color:red;padding:20px;">❌ Gagal: ' . $e->getMessage() . '</pre>');
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// CRON RUNNER — Pengganti cron job untuk free hosting
+//
+// Cara pakai:
+//   1. Daftarkan URL ini di layanan cron gratis (cron-job.org,
+//      UptimeRobot, dsb.) agar dipanggil setiap 30 atau 60 menit.
+//   2. Gunakan SECRET_KEY di .env: CRON_SECRET=isi_string_acak_kamu
+//   3. Panggil: /run-schedule?secret=isi_string_acak_kamu
+// ─────────────────────────────────────────────────────────────────
+Route::get('/run-schedule', function (\Illuminate\Http\Request $request) {
+    // Guard: tolak jika secret tidak cocok (optional tapi disarankan)
+    $secret = config('app.cron_secret', env('CRON_SECRET', ''));
+    if ($secret && $request->query('secret') !== $secret) {
+        abort(403, 'Unauthorized.');
+    }
+
+    $started = now()->toDateTimeString();
+
+    try {
+        \Illuminate\Support\Facades\Artisan::call('schedule:run');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+
+        \Illuminate\Support\Facades\Log::info('[Cron via Web] schedule:run dijalankan.', [
+            'time'   => $started,
+            'output' => $output,
+        ]);
+
+        return response()->json([
+            'status'  => 'ok',
+            'ran_at'  => $started,
+            'message' => 'schedule:run selesai.',
+            'output'  => trim($output) ?: 'Tidak ada task yang berjalan saat ini.',
+        ]);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('[Cron via Web] Gagal: ' . $e->getMessage());
+        return response()->json([
+            'status'  => 'error',
+            'ran_at'  => $started,
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// MANUAL TRIGGER — Jalankan reminder assignment sekarang juga
+// Useful untuk testing, atau sebagai fallback jika cron-job.org
+// belum terdaftar.
+// URL: /run-reminder?secret=isi_string_acak_kamu
+// ─────────────────────────────────────────────────────────────────
+Route::get('/run-reminder', function (\Illuminate\Http\Request $request) {
+    $secret = config('app.cron_secret', env('CRON_SECRET', ''));
+    if ($secret && $request->query('secret') !== $secret) {
+        abort(403, 'Unauthorized.');
+    }
+
+    $started = now()->toDateTimeString();
+
+    try {
+        \Illuminate\Support\Facades\Artisan::call('app:send-assignment-reminders');
+        $output = \Illuminate\Support\Facades\Artisan::output();
+
+        \Illuminate\Support\Facades\Log::info('[Cron via Web] send-assignment-reminders dijalankan.', [
+            'time'   => $started,
+            'output' => $output,
+        ]);
+
+        return response()->json([
+            'status'  => 'ok',
+            'ran_at'  => $started,
+            'message' => 'Reminder assignment berhasil dijalankan.',
+            'output'  => trim($output),
+        ]);
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::error('[Cron via Web] Reminder gagal: ' . $e->getMessage());
+        return response()->json([
+            'status'  => 'error',
+            'ran_at'  => $started,
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});
+
 // Protected routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

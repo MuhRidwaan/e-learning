@@ -62,7 +62,14 @@ class DashboardController extends Controller
         // 5. Logic untuk Pelajar
         if ($user->hasRole('pelajar')) {
             $activeCourses = $user->enrolledCourses()->where('enrollments.status', 'active')->get();
-            $upcomingAssignments = Assignment::where('due_date', '>=', now())->take(5)->get();
+            $upcomingAssignments = Assignment::with('course')
+                ->where('due_date', '>=', now())
+                ->whereHas('course.enrollments', function ($q) use ($user) {
+                    $q->where('student_id', $user->id)->where('status', 'active');
+                })
+                ->orderBy('due_date', 'asc')
+                ->take(5)
+                ->get();
         }
 
         // 6. Return ke view 'dashboard'
